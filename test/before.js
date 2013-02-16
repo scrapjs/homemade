@@ -70,16 +70,17 @@ var cutThis = [1,2,5] //don’t mess it up, man
 
 //===================== EVALS =======================
 
-/*eval------------
+//eval------------
 var a = 123;
-print(a);
-----------------*/
+//----------------
 
-//%---
+//eval
 var target = [],
 	b = "Final var", c = [];
 //--
 
+
+//============================= Templates =================
 /*%---------
 var obj = [1,2,3];
 for (var i = obj.length; i--;){
@@ -87,11 +88,15 @@ for (var i = obj.length; i--;){
 }
 ----------*/
 
-/*eval
+/*%
 for (var i = target.length; i--;){
 	print("c[" + i + "] = " + target[i] + ";")
 }
 */
 
+//Insert target 1
+//%= target[1] + 5 //Is everything ok?
 
-//= target[1]; //Is everything ok?
+/*%
+ print("var c =" + a );
+*/

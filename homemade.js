@@ -21,14 +21,16 @@ exports.handleFile     = handleFile;
 var re = {
   'include' : /(?:\/\/|\/\*)(?:→|↓|->|include|inc)[ ->]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/igm,
   'exclude' : /((?:\/\/|\/\*)(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s)(?:[\n\r]-*\*\/|\/\/-+))+/ig,
-  'eval' : /(?:(?:\/\/|\/\*)(?:eval|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/igm,
-  'echo' : /(?:\/\/|\/\*)(?:=|echo|print)[ -]*\s+([^\s]+)\s*(?:-*\*\/|$)/ig
+  'eval' : /(?:(?:\/\/|\/\*)(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/igm,
+  'template' : /(?:(?:\/\/|\/\*)(?:template|tpl|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/igm,
+  'echo' : /(?:\/\/|\/\*)(?:%=|echo|print)[ -]*\s+([^\/\*\r\n]+)\s*(?:-*\*\/$|$|\/\/.*$)/igm
 }
 
-//For evaling
-global.evalResult = "";
+//Some necessities for API
+global.tplResult = "";
 global.print = function (str) {
-    evalResult += "\n" + str;
+    if (!tplResult) tplResult = str;
+    else tplResult += "\n" + str;
 }
 
 //Main handlr
@@ -56,22 +58,29 @@ function handle(src,context) {
     } catch (e) {
       return '//Include failed. File ' + file + ' wasn’t found.'
     }
-  })
-
-  rv = rv.replace(re['exclude'],"");
+  });
   
   rv = rv.replace(re['eval'],function(match,code) {
-    //console.log("//--------EVAL CODE")
-    //console.log(code)
-    evalResult = "";
     eval.call(global,code);
-    //console.log(evalResult)
-    return evalResult
+    return match
   });
 
-  /*rv = rv.replace(commands['print'].re,function(match,variable) {
-    return context[(variable || '').trim()];
-  });*/
+  rv = rv.replace(re['template'],function(match,code) {
+    //console.log("//--------TPL CODE")
+    //console.log(code)
+    tplResult = "";
+    eval.call(global,code);
+    //console.log(tplResult)
+    return tplResult
+  });
+
+  rv = rv.replace(re['echo'],function(match,target){
+    tplResult = "";
+    eval.call(global,"print(" + target + ");");
+    return tplResult;
+  });
+
+  rv = rv.replace(re['exclude'],"");
 
   return rv;
 }

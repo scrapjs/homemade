@@ -50,17 +50,24 @@ var thisShouldntBeCut = [1,2,/*don’t mess it up, man */,5];
 
 //===================== EVALS =======================
 
+//eval------------
+var a = 123;
+//----------------
 
-123
+//eval
+var target = [],
+	b = "Final var", c = [];
+//--
 
 
-
-
+//============================= Templates =================
 
 
 c[2] = 0;
 c[1] = 3;
 c[0] = 6;
 
+//Insert target 1
+8
 
-//= target[1]; //Is everything ok?
+var c =123
