@@ -100,7 +100,7 @@ if (args.length) {
 
 
 //----------Grunt-task
-module.exports = init;
+/*module.exports = init;
 init.homemade = {
   handle: handle,
   handleFile: handleFile
@@ -128,4 +128,4 @@ function init(grunt) {
       }
     }
   });
-};
+};*/
