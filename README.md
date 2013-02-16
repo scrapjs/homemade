@@ -1,5 +1,5 @@
 # Homemade.js
-Dumb js preprocessor. It can only include, exclude, eval and echo.
+Micro js preprocessor. It can only include, exclude, eval, template and echo.
 
 ## API
 ```javascript
@@ -35,4 +35,29 @@ if (a) {
 * Any kinds of code-generation
 
 ## Grunt
+Then add this line to your project's Gruntfile:
+
+```javascript
+grunt.loadNpmTasks('grunt-homemade');
+```
+
 Add `homemade` task and enjoy precompiled code.
+
+### Configuration
+Gruntfile:
+```js
+homemade : {
+  options: {
+    debug: true
+  },
+  files : {
+    'src/before.js' : 'src/after.js'
+  }
+}
+```
+
+## License
+Copyright Dmitry Ivanov
+Written by Dmitry Ivanov
+Inspired by [Jarrod Overson’s preprocessor](https://github.com/onehealth/preprocess)
+Licensed under the MIT license.

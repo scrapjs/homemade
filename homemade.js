@@ -12,18 +12,19 @@ homemade.js is stupid preprocessor
 //exports.homemade = preprocess;
 
 var path  = require('path'),
-    fs    = require('fs');
+    fs    = require('fs'),
+    grunt = require('grunt');
 
+//exports.handle         = handle;
+//exports.handleFile     = handleFile;
 
-exports.handle         = handle;
-exports.handleFile     = handleFile;
 
 var re = {
-  'include' : /(?:\/\/|\/\*)(?:→|↓|->|include|inc)[ ->]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/igm,
-  'exclude' : /((?:\/\/|\/\*)(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s)(?:[\n\r]-*\*\/|\/\/-+))+/ig,
-  'eval' : /(?:(?:\/\/|\/\*)(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/igm,
-  'template' : /(?:(?:\/\/|\/\*)(?:template|tpl|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/igm,
-  'echo' : /(?:\/\/|\/\*)(?:%=|echo|print)[ -]*\s+([^\/\*\r\n]+)\s*(?:-*\*\/$|$|\/\/.*$)/igm
+  'include' : /(?:\/\/|\/\*)(?:→|↓|->|include|inc)[ ->]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/gm,
+  'exclude' : /((?:\/\/|\/\*)(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s)(?:[\n\r]-*\*\/|\/\/-+))+/g,
+  'eval' : /(?:(?:\/\/|\/\*)(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/gm,
+  'template' : /(?:(?:\/\/|\/\*)(?:template|tpl|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/gm,
+  'echo' : /(?:\/\/|\/\*)(?:%=|echo|print)[ -]*\s+([^\/\*\r\n]+)\s*(?:-*\*\/$|$|\/\/.*$)/gm
 }
 
 //Some necessities for API
@@ -34,17 +35,20 @@ global.print = function (str) {
 }
 
 //Main handlr
-function handleFile(src, dest, context, callback) {
+function handleFile(src, dest, context) {
   context = context || {};
   context.src = src;
   context.srcDir = path.dirname(src);
 
-  fs.readFile(src,function(err,data){
-    if (err) return console.log("Error: " + err)
-    fs.writeFile(dest, handle(data, context), callback);
-  });
+  try {
+    var data = fs.readFileSync(src);
+    fs.writeFileSync(dest, handle(data, context));
+  } catch (e) {
+    console.log(e)
+  }
 }
 
+//Source code string handler
 function handle(src,context) {
   src = src.toString();
   
@@ -89,5 +93,39 @@ function handle(src,context) {
 //---------------CLI
 //console.log(process.argv)
 var args = process.argv.slice(2);
-handleFile(args[0], args[1], args[2], function (status, data) {console.log("ok")})
+if (args.length) {
+  handleFile(args[0], args[1], args[2])
+}
   
+
+
+//----------Grunt-task
+module.exports = init;
+init.homemade = {
+  handle: handle,
+  handleFile: handleFile
+};
+
+grunt.util = grunt.util || grunt.utils;
+
+var _ = grunt.util._;
+var defaultEnv = {};
+
+
+function init(grunt) {
+
+  grunt.registerMultiTask('homemade', 'Preprocess files', function() {
+
+    var context = _.extend({},defaultEnv,process.env, this.options()), files;
+
+    context.NODE_ENV = context.NODE_ENV || 'development';
+
+    if (this.data.files) {
+      for (var src in this.data.files) {
+        var dest = this.data.files[src];
+        dest = grunt.template.process(dest);
+        homemade.handleFile(src,dest,context);
+      }
+    }
+  });
+};

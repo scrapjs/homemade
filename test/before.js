@@ -81,6 +81,12 @@ var target = [],
 
 
 //============================= Templates =================
+/*%
+if (a) {
+	print("var b = " + a*10);
+}
+*/
+
 /*%---------
 var obj = [1,2,3];
 for (var i = obj.length; i--;){
@@ -95,7 +101,7 @@ for (var i = target.length; i--;){
 */
 
 //Insert target 1
-//%= target[1] + 5 //Is everything ok?
+//%= "target = " + target[1] + 5 //Is everything ok?
 
 /*%
  print("var c =" + a );

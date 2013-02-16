@@ -1,0 +1,49 @@
+{
+  "name": "homemade",
+  "description": "Micro JS preprocessor & grunt task",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dfcreative/homemade",
+  "author": {
+    "name": "Dmitry Ivanov",
+    "email": "df.creative@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dfcreative/homemade.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dfcreative/homemade/issues"
+  },
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "https://github.com/dfcreative/homemade/blob/master/LICENSE"
+    }
+  ],
+  "main": "homemade.js",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "scripts": {
+  },
+  "dependencies": {
+    "lodash": "~0.9.1",
+    "grunt": "~0.3.15"
+  },
+  "devDependencies": {
+  },
+  "keywords": [
+    "gruntplugin",
+    "directive",
+    "ENV",
+    "environment",
+    "ifdef",
+    "ifndef",
+    "echo",
+    "include",
+    "exclude",
+    "process",
+    "preprocess",
+    "pragma"
+  ]
+}
