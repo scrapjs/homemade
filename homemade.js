@@ -4,7 +4,8 @@ homemade.js is stupid preprocessor
 
 /*jshint node:true*/
 
-//TODO: make sharing context between evals.
+//TODO: make echo
+//TODO: make echo inside eval
 
 'use strict';
 
