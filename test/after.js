@@ -50,16 +50,17 @@ var thisShouldntBeCut = [1,2,/*don’t mess it up, man */,5];
 
 //===================== EVALS =======================
 
-/*%
-var target = [] 
-*/
 
-//%---------
-var obj = [1,2,3]
-for (var i = obj.length; i--;){
-	target.push(i*3)
-}
-//----------
+123
+
+
+
+
+
+
+c[2] = 0;
+c[1] = 3;
+c[0] = 6;
 
 
 //= target[1]; //Is everything ok?

@@ -70,16 +70,28 @@ var cutThis = [1,2,5] //don’t mess it up, man
 
 //===================== EVALS =======================
 
-/*%
-var target = [] 
-*/
+/*eval------------
+var a = 123;
+print(a);
+----------------*/
 
-//%---------
-var obj = [1,2,3]
+//%---
+var target = [],
+	b = "Final var", c = [];
+//--
+
+/*%---------
+var obj = [1,2,3];
 for (var i = obj.length; i--;){
 	target.push(i*3)
 }
-//----------
+----------*/
+
+/*eval
+for (var i = target.length; i--;){
+	print("c[" + i + "] = " + target[i] + ";")
+}
+*/
 
 
 //= target[1]; //Is everything ok?
