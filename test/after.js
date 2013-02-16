@@ -3,32 +3,31 @@
 //========================= INCLUDES ========================
 
 //---------- Wrong include
-//→ hello_world.js
-//--------------------
+//Include failed. File hello_world.js wasn’t found.
 
 
 //----------- Correct include 1
-//→ include1.md
-//---------------------------
+/*
+First text being included.
+*/
 
 
 //------------ Correct include 2
-/*inc----------
-include2.js
----------*/
+console.log("Include2 ready");
 //---------------------------
 
 
 //-------------Correct include 3
-/*↓
-include2.js
-*/
+console.log("Include2 ready");
 //---------------------------
 
 
 //-------------Correct include 4
-/*include include2.js */
+console.log("Include2 ready");
 //-------------------------
+
+//------------- Basic case
+console.log("Include2 ready");
 
 //==================== EXCLUDES ========================
 

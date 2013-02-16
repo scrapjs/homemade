@@ -18,10 +18,10 @@ exports.handle         = handle;
 exports.handleFile     = handleFile;
 
 var re = {
-  'include' : /(?:\/\/|\/\*)(?:→|↓|include|inc)[ -]*\s([^\s]+)\s*(?:-*\*\/|$)/ig,
+  'include' : /(?:\/\/|\/\*)(?:→|↓|include|inc)[ -]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/igm,
   'exclude' : /((?:\/\/|\/\*)(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s)(?:[\n\r]-*\*\/|\/\/-+))+/ig,
   'eval' : /(?:(?:\/\/|\/\*)(?:%|eval)[ -]*[\n\r]((?:(?:.|\s)(?!-*\*\/|\/\/-+))*)(?:.|\s)(?=-*\*\/|\/\/-+))+/ig,
-  'print' : /(?:\/\/|\/\*)(?:=|echo|print)[ -]*\s([^\s]+)\s*(?:-*\*\/|$)/ig
+  'print' : /(?:\/\/|\/\*)(?:=|echo|print)[ -]*\s+([^\s]+)\s*(?:-*\*\/|$)/ig
 }
 
 function handleFile(src, dest, context, callback) {
@@ -41,11 +41,15 @@ function handle(src,context) {
   
   var rv = src;
 
-  /*rv = rv.replace(commands['include'].re,function(match,file,include){
+  rv = rv.replace(re['include'],function(match,file,include){
     file = (file || '').trim();
-    var includedSource = fs.readFileSync(path.join(context.srcDir,file));
-    return includedSource || match + ' not found';
-  })*/
+    try {
+      var includedSource = fs.readFileSync(path.join(context.srcDir,file));
+      return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
+    } catch (e) {
+      return '//Include failed. File ' + file + ' wasn’t found.'
+    }
+  })
 
   rv = rv.replace(re['exclude'],"");
   

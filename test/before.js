@@ -30,6 +30,9 @@ include2.js
 /*include include2.js */
 //-------------------------
 
+//------------- Basic case
+//→ include2.js //Include header
+
 //==================== EXCLUDES ========================
 
 //-------------------- Correct exclude 1
