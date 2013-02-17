@@ -30,8 +30,8 @@ if (a) {
 
 * Include synonyms: `//include file.js`, `//inc file.js`, `//↓ file.js`, `//-> file.js`, `//> file.js`
 * Exclude synonims: `//exclude---`, `//cut------`
-* Template synonims: `//tpl---`, `//template------`
-* Use (windows typographics keys)[https://github.com/dfcreative/windows_typographic_hotkeys] to insert special symbols easily (Just type `[cut]`, or `Alt+→`).
+* Template synonims: `/*tpl---`, `/*template------`
+* Use [windows typographics keys)](https://github.com/dfcreative/windows_typographic_hotkeys) to insert special symbols easily (Just type `[cut]`, or `Alt+→`).
 
 ## Use
 You can make precompilation either from terminal or as grunt-task.
