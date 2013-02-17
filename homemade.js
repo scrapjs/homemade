@@ -5,8 +5,7 @@ homemade.js is stupid preprocessor
 'use strict';
 
 var path  = require('path'),
-    fs    = require('fs'),
-    grunt = require('grunt');
+    fs    = require('fs');
 
 exports.handle         = handle;
 exports.handleFile     = handleFile;
