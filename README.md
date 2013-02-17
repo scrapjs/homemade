@@ -64,6 +64,13 @@ Add `homemade` task and enjoy precompiled code.
 
 ## License
 Copyright Dmitry Ivanov.
+
 Written by Dmitry Ivanov.
+
 Inspired by [Jarrod Overson’s preprocessor](https://github.com/onehealth/preprocess).
+
 Licensed under the MIT license.
+
+## TODO
+* get rid of heavy grunt dependency
+* refine grunt processings with templates
