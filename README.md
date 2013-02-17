@@ -37,7 +37,7 @@ Just call `node homemade.js path/to/source.js path/to/destination.js`
 ### 2. Grunt-task
 Add this line to your project's Gruntfile:
 ```javascript
-grunt.loadNpmTasks('grunt-homemade');
+grunt.loadNpmTasks('homemade');
 ```
 
 Add gruntfile config, like this:
