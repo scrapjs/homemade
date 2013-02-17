@@ -2,14 +2,7 @@
 homemade.js is stupid preprocessor
  */
 
-/*jshint node:true*/
-
-//TODO: make echo
-//TODO: make echo inside eval
-
 'use strict';
-
-//exports.homemade = preprocess;
 
 var path  = require('path'),
     fs    = require('fs'),
@@ -93,39 +86,6 @@ function handle(src,context) {
 //---------------CLI
 //console.log(process.argv)
 var args = process.argv.slice(2);
-if (args.length) {
+if (args.length >= 2) {
   handleFile(args[0], args[1], args[2])
 }
-  
-
-
-//----------Grunt-task
-/*module.exports = init;
-init.homemade = {
-  handle: handle,
-  handleFile: handleFile
-};
-
-grunt.util = grunt.util || grunt.utils;
-
-var _ = grunt.util._;
-var defaultEnv = {};
-
-
-function init(grunt) {
-
-  grunt.registerMultiTask('homemade', 'Preprocess files', function() {
-
-    var context = _.extend({},defaultEnv,process.env, this.options()), files;
-
-    context.NODE_ENV = context.NODE_ENV || 'development';
-
-    if (this.data.files) {
-      for (var src in this.data.files) {
-        var dest = this.data.files[src];
-        dest = grunt.template.process(dest);
-        homemade.handleFile(src,dest,context);
-      }
-    }
-  });
-};*/
