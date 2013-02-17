@@ -15,8 +15,8 @@ var path  = require('path'),
     fs    = require('fs'),
     grunt = require('grunt');
 
-//exports.handle         = handle;
-//exports.handleFile     = handleFile;
+exports.handle         = handle;
+exports.handleFile     = handleFile;
 
 
 var re = {

@@ -20,11 +20,12 @@
       "url": "https://github.com/dfcreative/homemade/blob/master/LICENSE"
     }
   ],
-  "main": "homemade.js",
+  "main": "grunt.js",
   "engines": {
-    "node": ">= 0.6.0"
+    "node": "*"
   },
   "scripts": {
+    "test": "grunt test"
   },
   "dependencies": {
     "lodash": "~0.9.1",
