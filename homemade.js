@@ -12,11 +12,11 @@ exports.handleFile     = handleFile;
 
 
 var re = {
-  'include' : /(?:\/\/|\/\*)(?:→|↓|->|>+|include|inc)[ -]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/gm,
-  'exclude' : /((?:\/\/|\/\*)(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s)(?:[\n\r]-*\*\/|\/\/-+))+/g,
-  'eval' : /(?:(?:\/\/|\/\*)(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/gm,
-  'template' : /(?:(?:\/\/|\/\*)(?:template|tpl|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*\*\/|\/\/-+))*(?:.|\s))(?:[\n\r]-*\*\/|\/\/-+))+/gm,
-  'echo' : /(?:\/\/|\/\*)(?:%=|echo|print)[ -]*\s+([^\/\*\r\n]+)\s*(?:-*\*\/$|$|\/\/.*$)/gm
+  'include' : /(?:\/\/|\/\*)@(?:→|↓|->|>+|include|inc)[ -]*\s+([^\/\*\s]+)\s*(?:-*\*\/$|$|\/\/.*$)/gm,
+  'exclude' : /((?:\/\/|\/\*)@(?:✂|exclude|cut)[ -]*[\n\r](?:(?:.|\s)(?![\n\r]-*@\*\/|\/\/@(?:end)?-+))*(?:.|\s)(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/g,
+  'eval' : /(?:(?:\/\/|\/\*)@(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
+  'template' : /(?:(?:\/\/|\/\*)@(?:template|tpl|%)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
+  'echo' : /(?:\/\/|\/\*)@(?:=|%=|echo|print)[ -]*\s+([^\/\*\r\n]+)\s*(?:-*\*\/$|$|\/\/@?.*$)/gm
 }
 
 //Some necessities for API
@@ -57,6 +57,8 @@ function handle(src,context) {
   });
   
   rv = rv.replace(re['eval'],function(match,code) {
+    //console.log("//--------EVAL CODE")
+    //console.log(match)
     eval.call(global,code);
     return match
   });
@@ -71,6 +73,7 @@ function handle(src,context) {
   });
 
   rv = rv.replace(re['echo'],function(match,target){
+    //console.log(match)
     tplResult = "";
     eval.call(global,"print(" + target + ");");
     return tplResult;

@@ -4,34 +4,34 @@ Micro js preprocessor. It can only include, exclude, eval, template and echo.
 ## API
 ```javascript
 //Include
-//→ file.js
+//@→ file.js
 
 //Exclude
-//✂-------------
+//@✂-------------
 var a = "Some stub",
 	b = "Some other stub";
-//----------------
+//@----------------
 
 //Eval (make context for templates)
-//eval
+//@eval
 var a = 1;
-//------------
+//@------------
 
 //Template
-/*%
+/*@%
 if (a) {
 	print("var b = " + a*10);
 }
-*/
+@*/
 
 //Echo
-//%= a + 5
+//@%= a + 5
 ```
 
-* Include synonyms: `//include file.js`, `//inc file.js`, `//↓ file.js`, `//-> file.js`, `//> file.js`
-* Exclude synonims: `//exclude---`, `//cut------`
-* Template synonims: `/*tpl---`, `/*template------`
-* Use [windows typographics keys)](https://github.com/dfcreative/windows_typographic_hotkeys) to insert special symbols easily (Just type `[cut]`, or `Alt+→`).
+* Include synonyms: `//@include file.js`, `//@inc file.js`, `//@↓ file.js`, `//@-> file.js`, `//@> file.js`
+* Exclude synonims: `//@exclude---`, `//@cut------`
+* Template synonims: `/*@tpl---`, `/*@template------`
+* Use [windows typographics hotkeys](https://github.com/dfcreative/windows_typographic_hotkeys) to insert special symbols easily (Just type `[cut]`, or `Alt+→`).
 
 ## Use
 You can make precompilation either from terminal or as grunt-task.
