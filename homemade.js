@@ -72,15 +72,15 @@ function handle(src,context) {
 	});
 
 	rv = rv.replace(re['include'],function(match,file){
-		//console.log("=============")
+		//console.log("INCLUDE")
 		//console.log(match)
 		//console.log(file)
-		file = (file || '').trim();
+		file = (file || '').trim().replace(/["']/g,"");
 		try {
 			var includedSource = fs.readFileSync(path.join(context.srcDir,file));
 			return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
 		} catch (e) {
-			console.log('Include failed. File ' + file + ' wasn’t found.')
+			console.log('Include failed. File \"' + file + '\" wasn’t found.')
 		}
 	});
 	

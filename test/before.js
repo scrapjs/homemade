@@ -14,7 +14,7 @@
 
 
 //------------ Correct include 2
-/*#include /incs/include2.js*/
+/*#include "/incs/include2.js"*/
 
 
 //------------- Basic case
