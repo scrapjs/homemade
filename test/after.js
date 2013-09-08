@@ -2,40 +2,42 @@
 
 //========================= INCLUDES ========================
 //---------- Wrong include
-//#include hello_world.js
+//Include failed. File hello_world.js wasn’t found.
 //--------------------
 
 
 
 //----------- Correct include 1
-//#include ./incs/include1.md
+/*
+First text being included.
+*/
 
 
 
 
 //------------ Correct include 2
-/*#include /incs/include2.js*/
+console.log("Include2 ready");
 
 
 //------------- Basic case
-// #include include2.js //Include header
+//Include failed. File include2.js wasn’t found.
 
 
 
 //===================== ECHOES
 
-//#put 1+1
+2
 
-//#define TEST=123
 
-;/*#define _v = "ok?"*/;
-// #define function x(x){return x*2}
 
-var a = /*#put "'" + TEST + "'" */;
+;;
 
-var b = // #put (function(){ return _v})();
 
-//#put x(2) 
+var a = '123';
+
+var b = ok?
+
+4
 
 
 

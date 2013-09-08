@@ -1,21 +1,33 @@
 # Homemade.js
 Micro js preprocessor. It can only include, exclude, eval, template and echo.
 
+## Notes & ideas
+* Instead of making js preprocessor, let’s better make useful language things. Livescript looks too radical, all we need is some micro boilerplate-like enhancements, not cutting-edge shit.
+	+ No vars definitions.
+	+ Pattern mathing in methods
+	+ Type [alignment]
+	
+a(a, b) -> {
+	
+}
+a(a, b, c) -> {
+	
+}
+
 ## API
 ```javascript
 //Include
-//@→ file.js
+//#include file.js
 
 //Exclude
-//@✂-------------
+//#if
 var a = "Some stub",
 	b = "Some other stub";
-//@----------------
+//#endif
 
 //Eval (make context for templates)
-//@eval
-var a = 1;
-//@------------
+//#define A = 1
+
 
 //Template
 /*@%
@@ -48,16 +60,16 @@ grunt.loadNpmTasks('homemade');
 Add gruntfile config, like this:
 ```js
 homemade: {
-  js: {
-    'test/after.js' : 'test/before.js',
-    'test/after-2.js' : 'test/before-2.js',
-    context: {
-      dev: true
-    }
-  },
+	js: {
+		'test/after.js' : 'test/before.js',
+		'test/after-2.js' : 'test/before-2.js',
+		context: {
+			dev: true
+		}
+	},
 
-  otherJs: {
-        '<%= concat.dist.dest %>' : '<config:concat.dist.dest>'
+	otherJs: {
+				'<%= concat.dist.dest %>' : '<config:concat.dist.dest>'
 	}
 }
 ```
