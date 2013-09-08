@@ -1,13 +1,13 @@
 /*
 homemade.js is stupid preprocessor
  */
-
 var path  = require('path'),
 	fs    = require('fs');
 
-exports.handle         = handle;
-exports.handleFile     = handleFile;
+exports.handle = handle;
+exports.handleFile = handleFile;
 
+//regex's
 var prefix = "#",
 	comment = "(?:\\/\\/|\\/\\*)[ ]?",
 	end =  "[ ]*(?:\\*\\/|$|\\/\\/.*$)",
@@ -16,7 +16,7 @@ var prefix = "#",
 	variable = "([\\$a-zA-Z_][\\$a-zA-Z_0-9]*)",
 	assign = "[ ]*=[ ]*"
 
-
+//rules to apply to the file
 var rules = [
 	{
 		name: 'define',
@@ -26,14 +26,19 @@ var rules = [
 			//console.log(match)
 			//console.log(target)
 			tplResult = "";
-			eval.call(global, target + ";");
-			return tplResult;
+			try {
+				eval.call(global, target + ";");
+				return tplResult;
+			} catch (e){
+				throw e
+				return "//HOMEMADE ERROR: Define failed"; 
+			}
 		}
 	},
 	{
 		name: 'echo',
 		re: new RegExp(comment + prefix + "(?:print|put|echo)[ ]+" + expression + end, "gm"),
-		handle: function(match,target){
+		handle: function(match,target, context){
 			//console.log("ECHO")
 			//console.log(match)
 			//console.log(target)
@@ -47,12 +52,12 @@ var rules = [
 		re: new RegExp(comment + prefix + "(?:include)[ ]+" + inline + "[ ]*" + end, "gm"),
 		handle: function(match,file, context){
 			//console.log("INCLUDE")
-			//console.log(match)
+			//console.log("match:" + match)
 			file = (file || '').trim().replace(/["']/g,"");
-			//console.log(path.join(context.srcDir,file))
+			//console.log("file:" + path.join(context.srcDir,file))
 			try {
-				var includedSource = fs.readFileSync(path.join(context.srcDir,file));
-				return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
+				var includedSource = handleFile(path.join(context.srcDir,file), extend({},context));
+				return includedSource;
 			} catch (e) {
 				console.log('Include failed. File \"' + file + '\" wasn’t found.')
 				return "//HOMEMADE ERROR: Include failed. Can’t find \"" + file + "\""; 
@@ -74,22 +79,21 @@ global.print = function (str) {
 		else tplResult += "\n" + str;
 }
 
-//Main handlr
-function handleFile(src, dest, context) {
+
+//Main handlr - returns handled string result
+function handleFile(src, context) {
 	context = context || {};
 	context.src = src;
 	context.srcDir = path.dirname(src);
+	//console.log("handleFile in dir:" + context.srcDir)
 
-	try {
-		var data = fs.readFileSync(src);
-		fs.writeFileSync(dest, handle(data, context));
-	} catch (e) {
-		console.log(e)
-	}
+	var data = fs.readFileSync(src);
+	//console.log("handle opened: " + src)
+	return handle(data, context);
 }
 
-//Source code string handler
-function handle(data,context) {
+//Source code string handler - returns handled source
+function handle(data, context) {
 	data = data.toString();
 	
 	var rv = data;
@@ -108,9 +112,19 @@ function handle(data,context) {
 }
 
 
+//simple util
+function extend(a, b){
+	if (!b) return;
+	if (!a) a = {};
+	for (var i in b){
+		a[i] = b;
+	}
+}
+
+
 //---------------CLI
 //console.log(process.argv)
 var args = process.argv.slice(2);
 if (args.length >= 2) {
-	handleFile(args[0], args[1], args[2])
+	fs.writeFileSync(args[1], handleFile(args[0], args[2]))
 }

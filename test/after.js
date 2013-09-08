@@ -1,5 +1,7 @@
 /* Simple test of precompiler */
 
+
+
 //========================= INCLUDES ========================
 //---------- Wrong include
 //HOMEMADE ERROR: Include failed. Can’t find "hello_world.js"
@@ -16,11 +18,15 @@ First text being included.
 
 
 //------------ Correct include 2
-console.log("Include2 ready");
+console.log("Include2 ready some");
 
 
-//------------- Basic case
-//HOMEMADE ERROR: Include failed. Can’t find "include2.js"
+//------------- Recursive include
+//should include1 & include2 below
+/*
+First text being included.
+*/
+console.log("Include2 ready some");
 
 
 

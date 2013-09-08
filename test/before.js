@@ -1,5 +1,7 @@
 /* Simple test of precompiler */
 
+//#define SOME="some"
+
 //========================= INCLUDES ========================
 //---------- Wrong include
 //#include hello_world.js
@@ -14,11 +16,11 @@
 
 
 //------------ Correct include 2
-/*#include "/incs/include2.js"*/
+/*#include "incs/include2.js"*/
 
 
-//------------- Basic case
-// #include include2.js //Include header
+//------------- Recursive include
+// #include incs/include3.js //Include header
 
 
 
