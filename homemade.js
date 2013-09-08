@@ -80,7 +80,7 @@ function handle(src,context) {
 			var includedSource = fs.readFileSync(path.join(context.srcDir,file));
 			return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
 		} catch (e) {
-			return '//Include failed. File ' + file + ' wasn’t found.'
+			console.log('Include failed. File ' + file + ' wasn’t found.')
 		}
 	});
 	

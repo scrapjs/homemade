@@ -46,6 +46,8 @@ grunt.loadNpmTasks('homemade');
 * Precalculate some values. It may result in faster code than if it is calculated runtime.
 * Code-generation
 
+## Note
+This plugin was created as a fast replacing of preprocessor.js, preprocess.js etc, due to absence of necessary building features, like define, put etc. It is very insecure, has potential bugs and doomed to be replaced in future by the better preprocessor.
 
 ## License
 Copyright Dmitry Ivanov.

@@ -2,7 +2,7 @@
 
 //========================= INCLUDES ========================
 //---------- Wrong include
-//Include failed. File hello_world.js wasn’t found.
+
 //--------------------
 
 
@@ -20,7 +20,7 @@ console.log("Include2 ready");
 
 
 //------------- Basic case
-//Include failed. File include2.js wasn’t found.
+
 
 
 
@@ -41,6 +41,8 @@ var b = ok?
 
 
 
+		if (to.y !== undefined) this.top = to.y;
+		if (to.x !== undefined) this.left = to.x;
 
 
 //===================== EVALS =======================
