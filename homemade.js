@@ -57,10 +57,15 @@ function handle(src,context) {
 	
 	var rv = src;
 
+	//extend globals with context
+	for (var k in context){
+		global[k] = context[k];
+	}
+
 	rv = rv.replace(re['define'],function(match,target){
-		console.log("DEFINE")
-		console.log(match)
-		console.log(target)
+		//console.log("DEFINE")
+		//console.log(match)
+		//console.log(target)
 		tplResult = "";
 		eval.call(global, target + ";");
 		return tplResult;
@@ -96,9 +101,9 @@ function handle(src,context) {
 	});
 
 	rv = rv.replace(re['echo'],function(match,target){
-		console.log("ECHO")
-		console.log(match)
-		console.log(target)
+		//console.log("ECHO")
+		//console.log(match)
+		//console.log(target)
 		tplResult = "";
 		eval.call(global, "var __tmp = " + target + "\nprint(__tmp)");
 		return tplResult;

@@ -1,86 +1,50 @@
 # Homemade.js
-Micro js preprocessor. It can only include, exclude, eval, template and echo.
-
-## Notes & ideas
-* Instead of making js preprocessor, let’s better make useful language things. Livescript looks too radical, all we need is some micro boilerplate-like enhancements, not cutting-edge shit.
-	+ No vars definitions.
-	+ Pattern mathing in methods
-	+ Type [alignment]
-	
-a(a, b) -> {
-	
-}
-a(a, b, c) -> {
-	
-}
+C-like javascript preprocessor & grunt task. Include, define, put, conditions.
 
 ## API
+Fully compliable with preprocessor.js and more.
 ```javascript
-//Include
-//#include file.js
+//#include ./inc/file.js
 
-//Exclude
-//#if
-var a = "Some stub",
-	b = "Some other stub";
-//#endif
+//#define TEST=123
 
-//Eval (make context for templates)
-//#define A = 1
+var a = /*#put "'" + TEST + "'" */;
 
-
-//Template
-/*@%
-if (a) {
-	print("var b = " + a*10);
-}
-@*/
-
-//Echo
-//@%= a + 5
 ```
 
-* Include synonyms: `//@include file.js`, `//@inc file.js`, `//@↓ file.js`, `//@-> file.js`, `//@> file.js`
-* Exclude synonims: `//@exclude---`, `//@cut------`
-* Template synonims: `/*@tpl---`, `/*@template------`
-* Use [windows typographics hotkeys](https://github.com/dfcreative/windows_typographic_hotkeys) to insert special symbols easily (Just type `[cut]`, or `Alt+→`).
+## Use: CLI
+`node homemade.js path/to/source.js path/to/destination.js`
 
-## Use
-You can make precompilation either from terminal or as grunt-task.
-
-### 1. CLI
-Just call `node homemade.js path/to/source.js path/to/destination.js`
-
-### 2. Grunt-task
-Add this line to your project's Gruntfile:
+## Use: Grunt-task
+Gruntfile.js
 ```javascript
-grunt.loadNpmTasks('homemade');
-```
-
-Add gruntfile config, like this:
-```js
+//config
+...
 homemade: {
 	js: {
-		'test/after.js' : 'test/before.js',
-		'test/after-2.js' : 'test/before-2.js',
+		src: 'build/build.jquery.js',
+		dest: 'jquery.<%= pkg.name %>.js',
 		context: {
-			dev: true
+			pluginName: "<%= pkg.name %>"
 		}
 	},
 
 	otherJs: {
-				'<%= concat.dist.dest %>' : '<config:concat.dist.dest>'
+		src: '<config:concat.dist.dest>',
+		dest: '<%= concat.dist.dest %>'
 	}
 }
-```
+...
 
-Add `homemade` task and enjoy precompiled code.
+grunt.loadNpmTasks('homemade');
+//Add "homemade" task
+```
 
 ## Use cases
 
-* Create API methods for the class or even classes itself, based on some model (Meta-programming). Demo [Color.js in Graphics](https://github.com/dfcreative/graphics/blob/master/src/Color.js).
-* Precalculate some values. It will result in faster code than if it is calculated in runtime.
-* Any kinds of code-generation
+* Build jquery-plugins, components, wrappers, amd modules etc. easier and more clear way than concat
+* Precalculate some values. It may result in faster code than if it is calculated runtime.
+* Code-generation
 
 
 ## License
@@ -91,6 +55,3 @@ Written by Dmitry Ivanov.
 Inspired by [Jarrod Overson’s preprocessor](https://github.com/onehealth/preprocess).
 
 Licensed under the MIT license.
-
-## TODO
-* Ifdefs? Now it can be easily done through eval or template
