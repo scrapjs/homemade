@@ -2,7 +2,7 @@
 
 //========================= INCLUDES ========================
 //---------- Wrong include
-
+//HOMEMADE ERROR: Include failed. Can’t find "hello_world.js"
 //--------------------
 
 
@@ -20,7 +20,7 @@ console.log("Include2 ready");
 
 
 //------------- Basic case
-
+//HOMEMADE ERROR: Include failed. Can’t find "include2.js"
 
 
 

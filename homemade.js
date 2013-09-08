@@ -3,7 +3,7 @@ homemade.js is stupid preprocessor
  */
 
 var path  = require('path'),
-		fs    = require('fs');
+	fs    = require('fs');
 
 exports.handle         = handle;
 exports.handleFile     = handleFile;
@@ -17,18 +17,55 @@ var prefix = "#",
 	assign = "[ ]*=[ ]*"
 
 
-var re = {
-	'include' : new RegExp(comment + prefix + "(?:include)[ ]+" + inline + "[ ]*" + end, "gm"),
+var rules = [
+	{
+		name: 'define',
+		re: new RegExp(comment + prefix + "(?:define)[ ]+" + expression + end, "gm"),
+		handle:	function(match,target, context){
+			//console.log("DEFINE")
+			//console.log(match)
+			//console.log(target)
+			tplResult = "";
+			eval.call(global, target + ";");
+			return tplResult;
+		}
+	},
+	{
+		name: 'echo',
+		re: new RegExp(comment + prefix + "(?:print|put|echo)[ ]+" + expression + end, "gm"),
+		handle: function(match,target){
+			//console.log("ECHO")
+			//console.log(match)
+			//console.log(target)
+			tplResult = "";
+			eval.call(global, "var __tmp = " + target + "\nprint(__tmp)");
+			return tplResult;
+		}
+	},
+	{
+		name: 'include',
+		re: new RegExp(comment + prefix + "(?:include)[ ]+" + inline + "[ ]*" + end, "gm"),
+		handle: function(match,file, context){
+			//console.log("INCLUDE")
+			//console.log(match)
+			file = (file || '').trim().replace(/["']/g,"");
+			//console.log(path.join(context.srcDir,file))
+			try {
+				var includedSource = fs.readFileSync(path.join(context.srcDir,file));
+				return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
+			} catch (e) {
+				console.log('Include failed. File \"' + file + '\" wasn’t found.')
+				return "//HOMEMADE ERROR: Include failed. Can’t find \"" + file + "\""; 
+			}
+		}
+	}
 	//'exclude' : new RegExp(comment + prefix + "(?:exclude)[\n\r](?:(?:.|\s)(?![\n\r]-*@\*\/|\/\/@(?:end)?-+))*(?:.|\s)(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+", "gm"),
 	//'eval' : /(?:(?:\/\/|\/\*)@(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
 	//'template' : /(?:(?:\/\/|\/\*)@(?:template)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
-	'echo' : new RegExp(comment + prefix + "(?:print|put|echo)[ ]+" + expression + end, "gm"),
 	//if
 	//elif
 	//ifdef
-	'define' : new RegExp(comment + prefix + "(?:define)[ ]+" + expression + end, "gm")
-	//put
-}
+]
 
 //Some necessities for API
 global.tplResult = "";
@@ -52,65 +89,21 @@ function handleFile(src, dest, context) {
 }
 
 //Source code string handler
-function handle(src,context) {
-	src = src.toString();
+function handle(data,context) {
+	data = data.toString();
 	
-	var rv = src;
+	var rv = data;
 
 	//extend globals with context
 	for (var k in context){
 		global[k] = context[k];
 	}
 
-	rv = rv.replace(re['define'],function(match,target){
-		//console.log("DEFINE")
-		//console.log(match)
-		//console.log(target)
-		tplResult = "";
-		eval.call(global, target + ";");
-		return tplResult;
-	});
-
-	rv = rv.replace(re['include'],function(match,file){
-		//console.log("INCLUDE")
-		//console.log(match)
-		//console.log(file)
-		file = (file || '').trim().replace(/["']/g,"");
-		try {
-			var includedSource = fs.readFileSync(path.join(context.srcDir,file));
-			return includedSource || '//Include failed. File ' + file + ' wasn’t found.';
-		} catch (e) {
-			console.log('Include failed. File \"' + file + '\" wasn’t found.')
-		}
-	});
+	//eval all keywords
+	for (var i = 0, l = rules.length; i<l; i++){
+		rv =  rv.replace(rules[i].re, function(m, t){return rules[i].handle.apply(this, [m, t, context])});
+	}
 	
-	rv = rv.replace(re['eval'],function(match,code) {
-		//console.log("//--------EVAL CODE")
-		//console.log(match)
-		eval.call(global,code);
-		return match
-	});
-
-	rv = rv.replace(re['template'],function(match,code) {
-		//console.log("//--------TPL CODE")
-		//console.log(code)
-		tplResult = "";
-		eval.call(global,code);
-		//console.log(tplResult)
-		return tplResult
-	});
-
-	rv = rv.replace(re['echo'],function(match,target){
-		//console.log("ECHO")
-		//console.log(match)
-		//console.log(target)
-		tplResult = "";
-		eval.call(global, "var __tmp = " + target + "\nprint(__tmp)");
-		return tplResult;
-	});
-
-	rv = rv.replace(re['exclude'],"");
-
 	return rv;
 }
 
