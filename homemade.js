@@ -9,20 +9,35 @@ exports.handleFile = handleFile;
 
 //regex's
 var prefix = "#",
-	comment = "(?:\\/\\/|\\/\\*)[ ]?",
-	end =  "[ ]*(?:\\*\\/|$|\\/\\/.*$)",
+	comment = "(?:\\/\\/|\\/\\*)",
+	start = comment + "[ ]?" + prefix,
+	end =  "[ ]*(?:\\*\\/|$)",
 	expression = "((?:[^\\n\\r](?!\\*\\/))+[^\\n\\r])" //"((?:[\\\\ a-zA-Z\\'\\\"\\+\\$\\_\\\/-\\?0-9\\(\\)\\{\\}\\;\\:](?!\\*\\/))+)",
 	inline = "([^\\*\\s]+)",
 	variable = "([\\$a-zA-Z_][\\$a-zA-Z_0-9]*)",
-	assign = "[ ]*=[ ]*"
+	assign = "[ ]*=[ ]*",
+	conditionStep = function(token){return start + token}, //like //#endif
+	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"}
+
+
+//Some necessities for API (in rendering)
+//result of rendering a rule
+global.tplResult = "";
+
+//printer to the tplResult
+global.print = function (str) {
+	if (!tplResult) tplResult = str;
+	else tplResult += "\n" + str;
+}
+
 
 //rules to apply to the file
 var rules = [
 	{
 		name: 'define',
-		re: new RegExp(comment + prefix + "(?:define)[ ]+" + expression + end, "gm"),
-		handle:	function(match,target, context){
-			//console.log("DEFINE")
+		re: new RegExp(start + "(define)[ ]+" + expression + end, "gm"),
+		handle:	function(match, token, target, context){
+			//console.log("DEFINE:" + token)
 			//console.log(match)
 			//console.log(target)
 			tplResult = "";
@@ -36,9 +51,62 @@ var rules = [
 		}
 	},
 	{
+		name: 'condition',
+		re: new RegExp(start + "(if|ifdef|ifndef)[ ]+" + conditionBodyTill("endif") + conditionStep("endif") + end, "gm"),
+		handle: function(match, token, body, context){
+			//console.log("CONDITION:" + token)
+			//console.log(body)
+
+			//Go by conditions, testing clauses in turn
+			//check if condition
+			var ifMatch = body.match(new RegExp(expression + end, "m"));
+			var ifCondition = ifMatch && ifMatch[1];
+			//console.log("ifCondition:" + ifCondition)
+			body = body.replace(new RegExp(expression + end, "m"), ""); //remove first expression (condition)
+			var ifBody = body.match(new RegExp(conditionBodyTill("(?:else|elif)"), "m"))[1].trim();
+			if (token == "ifndef"){
+				if (eval("!( " + ifCondition + ")")){
+					//console.log("ifndef caught:")
+					//console.log(ifndefBody)
+					return handle(ifBody, context);
+				}
+			} else {
+				if (!!eval(ifCondition)){
+					//console.log("if caught:")
+					//console.log(ifBody)
+					return handle(ifBody, context);
+				}
+			}
+			body = body.replace(new RegExp(conditionBodyTill("(?:elif|else)"), "m"), ""); //remove up to second condition
+
+			//check elifs
+			var elifRe = new RegExp(start + "(elif)", ""); //simple tester if existence elif
+			while (body.match(elifRe) !== null){
+				//caught something
+				var elifMatch = body.match(new RegExp(start + "elif" + expression + end, "m")); //get condition
+				var elifCondition = elifMatch[1];
+				//console.log(body)
+				//console.log("elifMatch:" + elifMatch)
+				//console.log("elifCondition:" + elifCondition)
+				body = body.replace(new RegExp(start + "elif" + expression + end, "m"), ""); //remove elif expression (condition)
+				var elifBody = body.match(new RegExp(conditionBodyTill("(?:else|elif)"), "m"))[1].trim();
+				if (!!eval(elifCondition)) return handle(elifBody, context);
+				body = body.replace(new RegExp(conditionBodyTill("(?:elif|else)"), "m"), ""); //remove up to next condition
+			}
+
+			//else - else
+			if (body.match(new RegExp(start + "else", ""))) {
+				body = body.replace(new RegExp(start + "else[ ]*" + end, "m"), "").trim(); //remove elif expression (condition)
+				return handle(body, context);
+			}
+
+			return tplResult;
+		}
+	},
+	{
 		name: 'echo',
-		re: new RegExp(comment + prefix + "(?:print|put|echo)[ ]+" + expression + end, "gm"),
-		handle: function(match,target, context){
+		re: new RegExp(start + "(print|put|echo)[ ]+" + expression + end, "gm"),
+		handle: function(match, token, target, context){
 			//console.log("ECHO")
 			//console.log(match)
 			//console.log(target)
@@ -49,8 +117,8 @@ var rules = [
 	},
 	{
 		name: 'include',
-		re: new RegExp(comment + prefix + "(?:include)[ ]+" + inline + "[ ]*" + end, "gm"),
-		handle: function(match,file, context){
+		re: new RegExp(start + "(include)[ ]+" + inline + "[ ]*" + end, "gm"),
+		handle: function(match, token, file, context){
 			//console.log("INCLUDE")
 			//console.log("match:" + match)
 			file = (file || '').trim().replace(/["']/g,"");
@@ -64,20 +132,13 @@ var rules = [
 			}
 		}
 	}
-	//'exclude' : new RegExp(comment + prefix + "(?:exclude)[\n\r](?:(?:.|\s)(?![\n\r]-*@\*\/|\/\/@(?:end)?-+))*(?:.|\s)(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+", "gm"),
+	//'exclude' : new RegExp(start + "(?:exclude)[\n\r](?:(?:.|\s)(?![\n\r]-*@\*\/|\/\/@(?:end)?-+))*(?:.|\s)(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+", "gm"),
 	//'eval' : /(?:(?:\/\/|\/\*)@(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
 	//'template' : /(?:(?:\/\/|\/\*)@(?:template)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
 	//if
 	//elif
 	//ifdef
 ]
-
-//Some necessities for API
-global.tplResult = "";
-global.print = function (str) {
-		if (!tplResult) tplResult = str;
-		else tplResult += "\n" + str;
-}
 
 
 //Main handlr - returns handled string result
@@ -105,7 +166,9 @@ function handle(data, context) {
 
 	//eval all keywords
 	for (var i = 0, l = rules.length; i<l; i++){
-		rv =  rv.replace(rules[i].re, function(m, t){return rules[i].handle.apply(this, [m, t, context])});
+		rv =  rv.replace(rules[i].re, function(match, token, content){
+			return rules[i].handle.apply(this, [match, token, content, context])
+		});
 	}
 	
 	return rv;

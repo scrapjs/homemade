@@ -7,14 +7,10 @@
 //HOMEMADE ERROR: Include failed. Can’t find "hello_world.js"
 //--------------------
 
-
-
 //----------- Correct include 1
 /*
 First text being included.
 */
-
-
 
 
 //------------ Correct include 2
@@ -22,16 +18,11 @@ console.log("Include2 ready some");
 
 
 //------------- Recursive include
-//should include1 & include2 below
-/*
-First text being included.
-*/
-console.log("Include2 ready some");
+// #include incs/include3.js //Include header
 
 
 
-//===================== ECHOES
-
+//===================== ECHOES ================
 2
 
 
@@ -45,47 +36,25 @@ var b = ok?
 
 4
 
+//test undefineds not to be removed
+if (to.y !== undefined) this.top = to.y;
+if (to.x !== undefined) this.left = to.x;
 
 
-		if (to.y !== undefined) this.top = to.y;
-		if (to.x !== undefined) this.left = to.x;
+//===================== Conditions =======================
 
 
-//===================== EVALS =======================
-
-//@eval------------
-var a = 123;
-//@----------------
-
-//@eval
-var target = [],
-	b = "Final var", c = [];
-//@end--
+//---------Ifdef test
+1st condition (correct)
 
 
-//============================= Templates =================
-/*@%
-if (a) {
-	print("var b = " + a*10);
-}
-@*/
+//-----------Ifndef test
+4th condition (correct)
 
-/*@tpl---------
-var obj = [1,2,3];
-for (var i = obj.length; i--;){
-	target.push(i*3)
-}
-----------*/
 
-/*@template
-for (var i = target.length; i--;){
-	print("c[" + i + "] = " + target[i] + ";")
-}
-*/
+//------------Evaluable condition
+3 (incorrect)
 
-//Insert target 1
-//@%= "target = " + target[1] + 5 //Is everything ok?
 
-/*@%
- print("var c =" + a );
-*/
+//-------------Elifs
+true: 5 (correct)
