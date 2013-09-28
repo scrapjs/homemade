@@ -10,14 +10,14 @@ exports.handleFile = handleFile;
 //regex's
 var prefix = "#",
 	comment = "(?:\\/\\/|\\/\\*)",
-	start = comment + "[ ]?" + prefix,
+	start = comment + "[ ]?" + prefix + "[ ]?",
 	end =  "[ ]*(?:\\*\\/|$)",
 	expression = "((?:[^\\n\\r](?!\\*\\/))+[^\\n\\r])" //"((?:[\\\\ a-zA-Z\\'\\\"\\+\\$\\_\\\/-\\?0-9\\(\\)\\{\\}\\;\\:](?!\\*\\/))+)",
 	inline = "([^\\*\\s]+)",
 	variable = "([\\$a-zA-Z_][\\$a-zA-Z_0-9]*)",
 	assign = "[ ]*=[ ]*",
 	conditionStep = function(token){return start + token}, //like //#endif
-	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"}
+	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"} //like 
 
 
 //Some necessities for API (in rendering)
@@ -33,6 +33,15 @@ global.print = function (str) {
 
 //rules to apply to the file
 var rules = [
+	{
+		name: "exclude",
+		re: new RegExp(start + "(exclude)" + conditionBodyTill("(?:endexclude|end)") + conditionStep("(?:endexclude|end)") + end, "gm"),
+		handle: function(match, token, body, context){
+			//console.log("ECXLUDE:" + token)
+			//console.log(match)
+			return "";
+		}
+	},
 	{
 		name: 'define',
 		re: new RegExp(start + "(define)[ ]+" + expression + end, "gm"),
@@ -56,6 +65,7 @@ var rules = [
 		handle: function(match, token, body, context){
 			//console.log("CONDITION:" + token)
 			//console.log(body)
+			tplResult = "";
 
 			//Go by conditions, testing clauses in turn
 			//check if condition
@@ -123,21 +133,10 @@ var rules = [
 			//console.log("match:" + match)
 			file = (file || '').trim().replace(/["']/g,"");
 			//console.log("file:" + path.join(context.srcDir,file))
-			try {
-				var includedSource = handleFile(path.join(context.srcDir,file), extend({},context));
-				return includedSource;
-			} catch (e) {
-				console.log('Include failed. File \"' + file + '\" wasn’t found.')
-				return "//HOMEMADE ERROR: Include failed. Can’t find \"" + file + "\""; 
-			}
+			var includedSource = handleFile(path.join(context.srcDir,file), extend({},context));
+			return includedSource;
 		}
 	}
-	//'exclude' : new RegExp(start + "(?:exclude)[\n\r](?:(?:.|\s)(?![\n\r]-*@\*\/|\/\/@(?:end)?-+))*(?:.|\s)(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+", "gm"),
-	//'eval' : /(?:(?:\/\/|\/\*)@(?:eval)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
-	//'template' : /(?:(?:\/\/|\/\*)@(?:template)[ -]*[\s]+((?:(?:.|\s)(?![\n\r]-*@?\*\/|\/\/@(?:end)?-+))*(?:.|\s))(?:[\n\r]-*@?\*\/|\/\/@(?:end)?-+))+/gm,
-	//if
-	//elif
-	//ifdef
 ]
 
 
@@ -148,9 +147,15 @@ function handleFile(src, context) {
 	context.srcDir = path.dirname(src);
 	//console.log("handleFile in dir:" + context.srcDir)
 
-	var data = fs.readFileSync(src);
-	//console.log("handle opened: " + src)
+	try {
+		var data = fs.readFileSync(src);
+	} catch (e){
+		console.log('Include failed. File \"' + src + '\" wasn’t found.')
+		return "//HOMEMADE ERROR: Include failed. Can't find the file \"" + src + "\""; 
+	}
+
 	return handle(data, context);
+	//console.log("handle opened: " + src)
 }
 
 //Source code string handler - returns handled source
