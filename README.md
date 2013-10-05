@@ -2,57 +2,55 @@
 Cozy JS preprocessor with C-preprocessor-like syntax. `Include`, `exclude`, `define`, `put`, conditions.
 
 ## Use
+To launch preprocessor:
 `node homemade.js path/to/source.js path/to/destination.js`
+
+Or you can better use [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task.
 
 ### API
 
 Compliable with [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and more.
 
-#### `exclude`
-Removes code from result
+#### `exclude` — removes code from result
 ```js
-	//#exclude
-	console.log(a, b, c)
-	//#end
+//#exclude
+console.log(a, b, c)
+//#end
 ```
 
-#### `include`
-Inserts files recursive way
+#### `include` — inserts files recursive way
 
 Source:
 ```js
-	//#include c.js
+//#include c.js
 ```
 
 `c.js`:
 ```js
-	//#include a.js
-	//#include b.js
+//#include a.js
+//#include b.js
 ```
 
 Result:
 ```
-	//> a.js
-	//> b.js
+//> a.js
+//> b.js
 ```
 
-#### `define`
-Defines variable to use in preprocessor.
+#### `define` — defines variable to use in preprocessor
 ```js
-	//#define PI = 3.14
-	//#define RAD2DEG = function(rad){ return rad * 180/PI }
+//#define PI = 3.14
+//#define RAD2DEG = function(rad){ return rad * 180/PI }
 ```
 
-#### `put`
-Places result of some code.
+#### `put` — places result of some code
 ```js
-	/*#put RAD2DEG(3)*/
-	/*#put "'" + TEST + "'" */
-	//#put (function(){ return "Some_result"})()
+/*#put RAD2DEG(3)*/
+/*#put "'" + TEST + "'" */
+//#put (function(){ return "Some_result"})()
 ```
 
 #### Conditions: `if`, `ifdef`, `ifndef`, `elif`, `else`
-Chooses clause according to the condition
 ```js
 //#if DEV
 	var name = "devil"
@@ -67,7 +65,7 @@ Chooses clause according to the condition
 
 See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/before.js) for more examples.
 
-## Use cases 
+### Use cases 
 #### jQuery/Zepto/vanilla plugin using `build.js`
 ```js
 //build.js
@@ -96,9 +94,7 @@ See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/bef
 })(window['jQuery'] || window['Zepto']);
 ```
 
-*Hint*: hook up [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task and build with no pain.
-
-## Application
+### Application
 * Build jquery-plugins, components, wrappers, AMD modules etc. easier and more clear way than concat
 * Precalculate some values. It may result in faster code than if it is calculated runtime.
 * Code-generation
