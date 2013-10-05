@@ -1,13 +1,14 @@
 # Homemade.js
-Cozy JS preprocessor with C-preprocessor-like syntax. Include, define, put, conditions.
+Cozy JS preprocessor with C-preprocessor-like syntax. `Include`, `exclude`, `define`, `put`, conditions.
 
 ## Use
 `node homemade.js path/to/source.js path/to/destination.js`
 
-## API
+### API
+
 Compliable with [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and more.
 
-### `exclude`
+#### `exclude`
 Removes code from result
 ```js
 	//#exclude
@@ -15,7 +16,7 @@ Removes code from result
 	//#end
 ```
 
-### `include`
+#### `include`
 Inserts files recursive way
 
 Source:
@@ -35,14 +36,14 @@ Result:
 	//> b.js
 ```
 
-### `define`
+#### `define`
 Defines variable to use in preprocessor.
 ```js
 	//#define PI = 3.14
 	//#define RAD2DEG = function(rad){ return rad * 180/PI }
 ```
 
-### `put`
+#### `put`
 Places result of some code.
 ```js
 	/*#put RAD2DEG(3)*/
@@ -50,7 +51,7 @@ Places result of some code.
 	//#put (function(){ return "Some_result"})()
 ```
 
-### Conditions: `if`, `ifdef`, `ifndef`, `elif`, `else`
+#### Conditions: `if`, `ifdef`, `ifndef`, `elif`, `else`
 Chooses clause according to the condition
 ```js
 //#if DEV
@@ -67,7 +68,7 @@ Chooses clause according to the condition
 See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/before.js) for more examples.
 
 ## Use cases 
-### jQuery/Zepto/vanilla plugin using `build.js`
+#### jQuery/Zepto/vanilla plugin using `build.js`
 ```js
 //build.js
 (function($){
