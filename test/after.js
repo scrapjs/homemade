@@ -19,7 +19,11 @@ console.log("Include2 ready some");
 f
 g
 //------------- Recursive include
-// #include incs/include3.js //Include header
+//should include1 & include2 below
+/*
+First text being included.
+*/
+console.log("Include2 ready some");
 h
 i
 j

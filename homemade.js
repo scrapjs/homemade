@@ -10,12 +10,12 @@ exports.handleFile = handleFile;
 //regex's
 var prefix = "#",
 	comment = "(?:\\/\\/|\\/\\*)",
-	start = comment + "[ ]?" + prefix + "[ ]?",
-	end =  "[ ]*(?:\\*\\/|$)",
+	start = comment + "[ \\t]?" + prefix + "[ \\t]?",
+	end =  "[ \\t]*(?:\\*\\/|(?:\\/\\/[^\\r\\n]*)?$)",
 	expression = "((?:[^\\n\\r](?!\\*\\/))+[^\\n\\r])" //"((?:[\\\\ a-zA-Z\\'\\\"\\+\\$\\_\\\/-\\?0-9\\(\\)\\{\\}\\;\\:](?!\\*\\/))+)",
-	inline = "([^\\*\\s]+)",
+	inline = "([^*\\s]+)",
 	variable = "([\\$a-zA-Z_][\\$a-zA-Z_0-9]*)",
-	assign = "[ ]*=[ ]*",
+	assign = "[ \\t]*=[ \\t]*",
 	conditionStep = function(token){return start + token}, //like //#endif
 	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"} //like 
 
@@ -61,9 +61,9 @@ var rules = [
 	},
 	{
 		name: 'condition',
-		re: new RegExp(start + "(if|ifdef|ifndef)[ ]+" + conditionBodyTill("endif") + conditionStep("endif") + end, "gm"),
+		re: new RegExp(start + "(if|ifdef|ifndef)[ \\t]+" + conditionBodyTill("endif") + conditionStep("endif") + end, "gm"),
 		handle: function(match, token, body, context){
-			//console.log("CONDITION:" + token)
+			//console.log("CONDITION:" + match)
 			//console.log(body)
 			tplResult = "";
 
@@ -127,7 +127,7 @@ var rules = [
 	},
 	{
 		name: 'include',
-		re: new RegExp(start + "(include)[ ]+" + inline + "[ ]*" + end, "gm"),
+		re: new RegExp(start + "(include)[ \\t]+" + inline + "[ \\t]*" + end, "gm"),
 		handle: function(match, token, file, context){
 			//console.log("INCLUDE")
 			//console.log("match:" + match)
