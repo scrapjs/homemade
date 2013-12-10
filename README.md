@@ -1,74 +1,101 @@
 # Homemade.js
-Cozy JS preprocessor with C-preprocessor-like syntax. `Include`, `exclude`, `define`, `put`, conditions.
+Cozy C-like preprocessor: `include`, `exclude`, `define`, `put`, `if`, `elif`, `ifdef`.
 
-## Use
-To launch preprocessor:
+### Use CLI
 `node homemade.js path/to/source.js path/to/destination.js`
 
-Or you can better use [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task.
+### Use with grunt
+Look for [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task.
 
-### API
+
+## API
 
 Compliable with [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and more.
 
-#### `exclude` — removes code from result
+### `#exclude` — removes wrapped code
+
+Source:
 ```js
 //#exclude
 console.log(a, b, c)
 //#end
 ```
 
-#### `include` — inserts files recursive way
+Result:
+```js
+```
+
+### `#include` — inserts file
 
 Source:
 ```js
-//#include c.js
+//#include ./c.js
 ```
 
 `c.js`:
 ```js
-//#include a.js
-//#include b.js
+//Hello
+//World
 ```
 
 Result:
 ```
-//> a.js
-//> b.js
+//Hello
+//World
 ```
 
-#### `define` — defines variable to use in preprocessor
+Files are inserted in a recursive way, so that inserted files will be handled also.
+Current directory is taken the current file’s one. The current file is that where the current `#inline` directive is. 
+
+### `#define` — defines variable to use in preprocessor
+
+Source:
 ```js
-//#define PI = 3.14
-//#define RAD2DEG = function(rad){ return rad * 180/PI }
+//#define DEBUG = true
+//#define name = "Hello world"
 ```
 
-#### `put` — places result of some code
+Defined variables can be used later in `#put` or `#if`.
+
+### `#put` — places result of some code
+
+Source:
 ```js
-/*#put RAD2DEG(3)*/
-/*#put "'" + TEST + "'" */
-//#put (function(){ return "Some_result"})()
+/*#put "var projectName = '" + name + "'" */
 ```
 
-#### Conditions: `if`, `ifdef`, `ifndef`, `elif`, `else`
+Result:
+```js
+var projectName = 'Hello world'
+```
+
+### Conditions: `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
+
+Source:
 ```js
 //#if DEV
-	var name = "devil"
-//#elif PROD
-	var name = "angel"
-//#elif name
-	/* #put "var name = '" + name + "'" */
+	console.log("debug:", result)
 //#else
-	var name = "noname"
+	//#put "var projectName = '" + name + "'"
 //#endif
+```
+
+Result with `DEV === true`:
+```js
+	console.log("debug:", result)
+```
+
+Result with `DEV === false`:
+```js
+	var projectName = 'Hello world'
 ```
 
 See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/before.js) for more examples.
 
-### Use cases 
-#### jQuery/Zepto/vanilla plugin using `build.js`
+## jQuery/Zepto/vanilla plugin boilerplate
+
+`build.js`:
 ```js
-//build.js
 (function($){
 	//#ifndef pluginName
 		var pluginName = "awesomePlugin"
@@ -77,7 +104,7 @@ See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/bef
 	//#endif
 
 	//#include "../src/utils.js"
-	//#include "../src/plugin-vanilla.js"
+	//#include "../src/AwesomePlugin.js"
 	
 	//jquery-plugin
 	if ($){
@@ -94,27 +121,21 @@ See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/bef
 })(window['jQuery'] || window['Zepto']);
 ```
 
-### Application
-* Build jquery-plugins, components, wrappers, AMD modules etc. easier and more clear way than concat
-* Precalculate some values. It may result in faster code than if it is calculated runtime.
-* Code-generation
-* Escaping console in build like `/*#exclude*/console.log(dev_info)/*#end*/`
+## Motivation
+This plugin was created as fast replacement to [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and alike, due to lack of necessary building features on that moment, like `define`, `put` etc.
 
-## Projects use homemade
+Homemade has some flaws:
+
+* Insecure − context is defined in global scope, so that you have to beware of variable names in `#define`
+* Helpless in detecting syntax errors.
+* Can not handle nested conditions (fortunately, do not need to).
+
+But it is well-proven and battle-tested in real projects.
+
+
+## Projects which use _homemade_
 * [sticky-js](https://github.com/dfcreative/sticky)
-* [slide-area](https://github.com/dfcreative/slide-area)
-
-## Note
-This plugin was created as fast replacement to preprocessor.js, preprocess.js etc, due to absence of necessary building features, like define, put etc. It is full of flaws:
-
-* Insecure - context is defined in global scope, evaluating code has acces to the node environment, some variable names may interfere with environment, and nobody knows what to do.
-* Extremely feckless in debugging own bugs.
-* Cannot handle nested conditions.
-* Catches only simple kinds of errors.
-* Does not checks syntax, it’s all due to author not to make mistakes.
-* Doomed to be replaced in future with a better preprocessor.
-
-But it perfectly serves main purposes. That is why it’s called _homemade_.
+* [imagine-js](https://github.com/dfcreative/imagine)
 
 ## License
 Copyright Dmitry Ivanov.
