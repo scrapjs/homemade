@@ -1,7 +1,7 @@
 {
   "name": "homemade",
   "description": "C-like JS preprocessor & grunt task",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "homepage": "https://github.com/dfcreative/homemade",
   "author": {
     "name": "Dmitry Ivanov",

@@ -1,18 +1,18 @@
 # Homemade.js
-Cozy C-like preprocessor: `include`, `exclude`, `define`, `put`, `if`, `elif`, `ifdef`.
+Cozy C-like preprocessor. Implements `include`, `exclude`, `define`, `put`, `if`, `elif`, `ifdef`.
 
-### Use CLI
+#### a. Use in console
 `node homemade.js path/to/source.js path/to/destination.js`
 
-### Use with grunt
-Look for [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task.
+#### b. Use with grunt ★
+See [grunt-homemade](https://github.com/dfcreative/grunt-homemade) task.
 
 
 ## API
 
-Compliable with [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and more.
+Fully compatible with [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) syntax.
 
-### `#exclude` — removes wrapped code
+### `#exclude` — removes fragments of code
 
 Source:
 ```js
@@ -34,18 +34,16 @@ Source:
 
 `c.js`:
 ```js
-//Hello
-//World
+Hello world!
 ```
 
 Result:
 ```
-//Hello
-//World
+Hello world!
 ```
 
 Files are inserted in a recursive way, so that inserted files will be handled also.
-Current directory is taken the current file’s one. The current file is that where the current `#inline` directive is. 
+The current directory `.` is taken one of the current file. The current file is that where the current `#inline` directive is. 
 
 ### `#define` — defines variable to use in preprocessor
 
@@ -55,9 +53,9 @@ Source:
 //#define name = "Hello world"
 ```
 
-Defined variables can be used later in `#put` or `#if`.
+Defined variables can be used later in `#put` or `#if`s.
 
-### `#put` — places result of some code
+### `#put` — places variables or evals code passed
 
 Source:
 ```js
@@ -69,7 +67,7 @@ Result:
 var projectName = 'Hello world'
 ```
 
-### Conditions: `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
+### `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
 
 Source:
 ```js
@@ -90,7 +88,7 @@ Result with `DEV === false`:
 	var projectName = 'Hello world'
 ```
 
-See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/before.js) for more examples.
+For more examples see [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/before.js).
 
 ## jQuery/Zepto/vanilla plugin boilerplate
 
@@ -122,9 +120,9 @@ See [test/before.js](https://github.com/dfcreative/homemade/blob/master/test/bef
 ```
 
 ## Motivation
-This plugin was created as fast replacement to [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and alike, due to lack of necessary building features on that moment, like `define`, `put` etc.
+This plugin was created as a fast replacement to [preprocessor.js](https://github.com/dcodeIO/Preprocessor.js) and alike, due to lack of necessary building features in them on that moment, like `define`, `put` etc.
 
-Homemade has some flaws:
+For now *homemade* has some flaws:
 
 * Insecure − context is defined in global scope, so that you have to beware of variable names in `#define`
 * Helpless in detecting syntax errors.
@@ -139,7 +137,5 @@ But it is well-proven and battle-tested in real projects.
 
 ## License
 Copyright Dmitry Ivanov.
-
 Written by Dmitry Ivanov.
-
 Licensed under the MIT license.
