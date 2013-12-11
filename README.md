@@ -1,4 +1,5 @@
-# <img src="https://raw.github.com/dfcreative/homemade/master/homemade.png" style="vertical-align: -85%; padding-bottom: 20px; display: inline-block;"/> Homemade.js
+![homemade.js](https://raw.github.com/dfcreative/homemade/master/homemade.png)
+# Homemade.js
 Cozy C-like preprocessor. Implements `include`, `exclude`, `define`, `put`, `if`, `elif`, `ifdef`.
 
 #### a. Use in console
