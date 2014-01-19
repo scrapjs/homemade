@@ -25,6 +25,8 @@ Result:
 ```js
 ```
 
+Useful when you want to remove supporting code from the build, like helper functions etc.
+
 ### `#include` — inserts file
 
 Source:
@@ -49,8 +51,8 @@ The current directory `.` is taken one of the current file. The current file is 
 
 Source:
 ```js
-//#define DEBUG = true
 //#define name = "Hello world"
+//#define dictToArray = function(dict){ var result = []; for (var key in dict){ result.push(key + " " + dict[key]) }; return result; }
 ```
 
 Defined variables can be used later in `#put` or `#if`s.
@@ -60,21 +62,16 @@ Defined variables can be used later in `#put` or `#if`s.
 Source:
 ```js
 var projectName = //#put name
+//#define a = {a:1, b:2, c:3}
+//#put a;
+//#put dictToArray(a);
 ```
 
 Result:
 ```js
 var projectName = 'Hello world'
-```
-
-Source:
-```js
-//#put {a:1, b:2, c:3}
-```
-
-Result:
-```js
 {a:1, b:2, c:3}
+["a 1", "b 2", "c 3"]
 ```
 
 ### `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
@@ -135,8 +132,8 @@ This plugin was created as a fast replacement to [preprocessor.js](https://githu
 For now *homemade* has some flaws:
 
 * Insecure − context is defined in global scope, so that you have to beware of variable names in `#define`
-* Syntax errors detection is difficult.
-* Nested conditions are not supported (fortunately, they do not need to be).
+* Nested conditions are not supported
+* No decent syntax errors detection
 
 
 ## Projects which use _homemade_
