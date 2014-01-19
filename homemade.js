@@ -2,7 +2,8 @@
 homemade.js is stupid preprocessor
  */
 var path  = require('path'),
-	fs    = require('fs');
+	fs    = require('fs'),
+	toSource = require('tosource')
 
 exports.handle = handle;
 exports.handleFile = handleFile;
@@ -122,7 +123,7 @@ var rules = [
 			//console.log(target)
 			tplResult = "";
 			eval.call(global, "var __tmp = " + target + "\nprint(__tmp)");
-			return tplResult;
+			return toSource(tplResult);
 		}
 	},
 	{

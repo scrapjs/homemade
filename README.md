@@ -55,16 +55,26 @@ Source:
 
 Defined variables can be used later in `#put` or `#if`s.
 
-### `#put` — places variables or evals code passed
+### `#put` — places variable source (uses [tosource](https://github.com/marcello3d/node-tosource) for serialization)
 
 Source:
 ```js
-/*#put "var projectName = '" + name + "'" */
+var projectName = //#put name
 ```
 
 Result:
 ```js
 var projectName = 'Hello world'
+```
+
+Source:
+```js
+//#put {a:1, b:2, c:3}
+```
+
+Result:
+```js
+{a:1, b:2, c:3}
 ```
 
 ### `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
@@ -125,15 +135,14 @@ This plugin was created as a fast replacement to [preprocessor.js](https://githu
 For now *homemade* has some flaws:
 
 * Insecure − context is defined in global scope, so that you have to beware of variable names in `#define`
-* Helpless in detecting syntax errors.
-* Can not handle nested conditions (fortunately, do not need to).
-
-But it is well-proven and battle-tested in real projects.
+* Syntax errors detection is difficult.
+* Nested conditions are not supported (fortunately, they do not need to be).
 
 
 ## Projects which use _homemade_
 * [sticky-js](https://github.com/dfcreative/sticky)
 * [imagine-js](https://github.com/dfcreative/imagine)
+* [rus-js](https://github.com/dfcreative/rus)
 
 ## License
 Copyright Dmitry Ivanov.

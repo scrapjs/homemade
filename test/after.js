@@ -15,7 +15,7 @@ First text being included.
 d
 e
 //------------ Correct include 2
-console.log("Include2 ready some");
+console.log("Include2 ready "some"");
 f
 g
 //------------- Recursive include
@@ -23,7 +23,7 @@ g
 /*
 First text being included.
 */
-console.log("Include2 ready some");
+console.log("Include2 ready "some"");
 h
 i
 j
@@ -35,9 +35,9 @@ l
 ;;
 
 m
-var a = '123';
+var a = "'123'";
 n
-var b = ok?
+var b = "ok?"
 o
 4
 p
@@ -46,11 +46,20 @@ if (to.y !== undefined) this.top = to.y;
 if (to.x !== undefined) this.left = to.x;
 q
 r
+[ 1,
+  2,
+  3,
+  4,
+  5 ]
+{ a:1,
+  b:2,
+  c:3 }
+function (){return 1}
 //===================== Conditions =======================
 
 s
 //---------Ifdef test
-t	1st condition (correct)
+t	"1st condition (correct)"
 u
 v
 //-----------Ifndef test
@@ -62,7 +71,7 @@ x
 y
 z
 //-------------Elifs
-true: 5 (correct)
+"true: 5 (correct)"
 //-------------excludes
 
 Excludes ok

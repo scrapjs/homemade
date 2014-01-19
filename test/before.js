@@ -42,6 +42,9 @@ if (to.y !== undefined) this.top = to.y;
 if (to.x !== undefined) this.left = to.x;
 q
 r
+//#put [1,2,3,4,5]
+//#put {a:1, b:2, c:3}
+//#put function(){return 1}
 //===================== Conditions =======================
 //#define yep = true
 s
