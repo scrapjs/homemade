@@ -45,7 +45,7 @@ Hello world!
 ```
 
 Files are inserted in a recursive way, so that inserted files will be handled also.
-The current directory `.` is taken one of the current file. The current file is that where the current `#inline` directive is. 
+The current directory `.` is taken one of the current file. The current file is that where the current `#inline` directive is.
 
 ### `#define` — defines variable to use in preprocessor
 
@@ -65,6 +65,7 @@ var projectName = //#put name
 //#define a = {a:1, b:2, c:3}
 //#put a;
 //#put dictToArray(a);
+//#put `var a = ` + projectName + `;`
 ```
 
 Result:
@@ -73,6 +74,8 @@ var projectName = 'Hello world'
 {a:1, b:2, c:3}
 ["a 1", "b 2", "c 3"]
 ```
+
+To output raw code, use markdown inline code notation, like `\`raw code\` + variable`
 
 ### `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`
 
@@ -105,12 +108,12 @@ For more examples see [test/before.js](https://github.com/dfcreative/homemade/bl
 	//#ifndef pluginName
 		var pluginName = "awesomePlugin"
 	//#else
-		/* #put "var pluginName = '" + pluginName + "'" */
+		/* #put `var pluginName = ` + pluginName */
 	//#endif
 
 	//#include "../src/utils.js"
 	//#include "../src/AwesomePlugin.js"
-	
+
 	//jquery-plugin
 	if ($){
 		$['fn'][pluginName] = function (arg) {

@@ -1,6 +1,6 @@
 {
   "name": "homemade",
-  "description": "C-like JS preprocessor & grunt task",
+  "description": "C-like JS preprocessor",
   "version": "0.3.4",
   "homepage": "https://github.com/dfcreative/homemade",
   "author": {
