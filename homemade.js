@@ -18,7 +18,7 @@ var prefix = "#",
 	variable = "([\\$a-zA-Z_][\\$a-zA-Z_0-9]*)",
 	assign = "[ \\t]*=[ \\t]*",
 	conditionStep = function(token){return start + token}, //like //#endif
-	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"} //like 
+	conditionBodyTill = function(tillToken){return "((?:[^](?!" + conditionStep(tillToken) + "))*[^])"} //like
 
 
 //Some necessities for API (in rendering)
@@ -56,7 +56,7 @@ var rules = [
 				return tplResult;
 			} catch (e){
 				throw e
-				return "//HOMEMADE ERROR: Define failed"; 
+				return "//HOMEMADE ERROR: Define failed";
 			}
 		}
 	},
@@ -122,8 +122,26 @@ var rules = [
 			//console.log(match)
 			//console.log(target)
 			tplResult = "";
-			eval.call(global, "var __tmp = " + target + "\nprint(__tmp)");
-			return toSource(tplResult);
+
+			//TODO: recognize markdown-like raw code strings like `raw code ` + 'variable to serialize' → raw code 'variable to serialize'
+			//Handle raw chunks: //#put `var a = ` add(x, y); `;`
+			var chunks = [],
+				match = undefined;
+			while ((match = target.match(/`[^`]*`/)) !== null) {
+				if (match.index > 0) {
+					//eval non-raw chunk
+					var codeChunk = target.slice(0,match.index);
+					eval.call(global, "var __tmp = " + match[0] + "\nprint(__tmp)");
+					toSource(tplResult)
+					chunks.push()
+				}
+
+				chunks.push(target[0]);
+				tplResult = "";
+				target = target.replace(match[0], "");
+			}
+
+			return chunks.join("");
 		}
 	},
 	{
@@ -152,7 +170,7 @@ function handleFile(src, context) {
 		var data = fs.readFileSync(src);
 	} catch (e){
 		console.log('Include failed. File \"' + src + '\" wasn’t found.')
-		return "//HOMEMADE ERROR: Include failed. Can't find the file \"" + src + "\""; 
+		return "//HOMEMADE ERROR: Include failed. Can't find the file \"" + src + "\"";
 	}
 
 	return handle(data, context);
@@ -162,7 +180,7 @@ function handleFile(src, context) {
 //Source code string handler - returns handled source
 function handle(data, context) {
 	data = data.toString();
-	
+
 	var rv = data;
 
 	//extend globals with context
@@ -176,7 +194,7 @@ function handle(data, context) {
 			return rules[i].handle.apply(this, [match, token, content, context])
 		});
 	}
-	
+
 	return rv;
 }
 
